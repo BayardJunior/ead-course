@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CouseServiceImpl implements CourseService {
@@ -25,6 +26,26 @@ public class CouseServiceImpl implements CourseService {
     public void cascadeDeleteSafety(CourseModel courseModel) {
         deleteAllModulesByCourse(courseModel);
         courseRepository.delete(courseModel);
+    }
+
+    @Override
+    public CourseModel save(CourseModel courseModel) {
+        return courseRepository.save(courseModel);
+    }
+
+    @Override
+    public boolean existsById(UUID courseId) {
+        return courseRepository.existsById(courseId);
+    }
+
+    @Override
+    public CourseModel findCourseById(UUID courseId) {
+        return courseRepository.findById(courseId).get();
+    }
+
+    @Override
+    public List<CourseModel> findAllCourses() {
+        return courseRepository.findAll();
     }
 
     private void deleteAllModulesByCourse(CourseModel courseModel) {
