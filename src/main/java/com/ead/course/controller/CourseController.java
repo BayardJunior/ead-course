@@ -47,7 +47,7 @@ public class CourseController {
     }
 
     @PutMapping("{courseId}")
-    public ResponseEntity<Object> saveCourse(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Validated CourseDto courseDto) {
+    public ResponseEntity<Object> updateCourse(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Validated CourseDto courseDto) {
 
         if (!this.courseService.existsById(courseId)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
