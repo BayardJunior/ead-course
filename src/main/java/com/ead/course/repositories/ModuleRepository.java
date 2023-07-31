@@ -25,10 +25,10 @@ public interface ModuleRepository extends JpaRepository<ModuleModel, UUID> {
      * {@Modify} juntamente com {@Query} são utilizados quando precisa
      * realizar uma instrução SQL do tipo DML (Data Manipulation Language) customizados
      */
-    @Query(value = "SELECT * FROM TB_MODULES WHERE COURSE_COURSE_ID = :courseId", nativeQuery = true)
+    @Query(value = "select * from TB_MODULES where course_course_id = :courseId", nativeQuery = true)
     List<ModuleModel> findAllModulesIntoCourse(@Param("courseId") UUID courseId);
 
-    @Query(value = "SELECT * FROM TB_MODULES WHERE COURSE_COURSE_ID = :courseId AND MODULE_ID = :moduleId", nativeQuery = true)
+    @Query(value = "select * from TB_MODULES where course_course_id = :courseId and module_id = :moduleId", nativeQuery = true)
     Optional<ModuleModel> findModuleIntoCourse(@Param("courseId") UUID courseId, @Param("moduleId") UUID moduleId);
 
 }

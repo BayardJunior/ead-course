@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface LessonRepository extends JpaRepository<LessonModel, UUID> {
 
-    @Query(value = "SELECT * FROM TB_LESSONS WHERE COURSE_COURSE_ID = :moduleId", nativeQuery = true)
+    @Query(value = "select * from TB_LESSONS where module_module_id = :moduleId", nativeQuery = true)
     List<LessonModel> findAllLessonsIntoModule(@Param("moduleId") UUID moduleId);
 }
