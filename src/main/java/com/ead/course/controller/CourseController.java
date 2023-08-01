@@ -47,7 +47,7 @@ public class CourseController {
         CourseModel courseModel = this.courseService.findCourseById(courseId);
         this.courseService.cascadeDeleteSafety(courseModel);
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course deleted sucessfully");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course deleted successfully");
     }
 
     @PutMapping("{courseId}")
