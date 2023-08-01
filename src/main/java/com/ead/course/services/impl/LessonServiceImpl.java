@@ -1,13 +1,13 @@
 package com.ead.course.services.impl;
 
 import com.ead.course.models.LessonModel;
-import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.LessonRepository;
 import com.ead.course.services.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,4 +33,20 @@ public class LessonServiceImpl implements LessonService {
     public void deleteAll(List<LessonModel> allLessonsIntoModule) {
         lessonRepository.deleteAll(allLessonsIntoModule);
     }
+
+    @Override
+    public LessonModel save(LessonModel lesson) {
+        return this.lessonRepository.save(lesson);
+    }
+
+    @Override
+    public void deleteLesson(LessonModel lesson) {
+        this.lessonRepository.delete(lesson);
+    }
+
+    @Override
+    public Optional<LessonModel> findLessonIntoModule(UUID moduleId, UUID lessonId) {
+        return this.lessonRepository.findLessonIntoModule(moduleId, lessonId);
+    }
+
 }
