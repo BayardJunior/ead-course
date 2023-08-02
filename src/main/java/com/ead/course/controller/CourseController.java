@@ -3,6 +3,7 @@ package com.ead.course.controller;
 import com.ead.course.dtos.CourseDto;
 import com.ead.course.models.CourseModel;
 import com.ead.course.services.CourseService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.UUID;
 
+@Log4j2
 @RestController
 @RequestMapping("/courses")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -30,30 +32,38 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<Object> saveCourse(@RequestBody @Validated CourseDto courseDto) {
 
+        log.debug("Post saveCourse courseDto received {}", courseDto.toString());
         CourseModel courseModel = new CourseModel();
         BeanUtils.copyProperties(courseDto, courseModel);
         courseModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.courseService.save(courseModel));
+        this.courseService.save(courseModel);
+        log.debug("Post saveCourse courseModel saved {}", courseModel.toString());
+        log.info("Course saved successfully courseId {}", courseModel.getCourseId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseModel);
     }
 
     @DeleteMapping("/{courseId}")
     public ResponseEntity<Object> deleteCourseById(@PathVariable(value = "courseId") UUID courseId) {
 
+        log.debug("DELETE deleteUser courseId received {}", courseId);
         if (!this.courseService.existsById(courseId)) {
+            log.warn("DELETE deleteUser userId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
         CourseModel courseModel = this.courseService.findCourseById(courseId);
         this.courseService.cascadeDeleteSafety(courseModel);
-
+        log.debug("DELETE deleteCourseById courseId deleted {}", courseId);
+        log.info("Course courseId {} deleted!", courseId);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course deleted successfully");
     }
 
     @PutMapping("{courseId}")
     public ResponseEntity<Object> updateCourse(@PathVariable(value = "courseId") UUID courseId, @RequestBody @Validated CourseDto courseDto) {
-
+        log.debug("PUT updateCourse courseId received {}", courseId);
         if (!this.courseService.existsById(courseId)) {
+            log.warn("PUT updateCourse courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
         CourseModel courseModel = this.courseService.findCourseById(courseId);
@@ -61,6 +71,8 @@ public class CourseController {
         BeanUtils.copyProperties(courseDto, courseModel);
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
+        log.debug("PUT updateCourse courseId updated {}", courseId);
+        log.info("Course courseId {} deleted!", courseId);
         return ResponseEntity.status(HttpStatus.OK).body(this.courseService.save(courseModel));
     }
 
@@ -75,9 +87,13 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public ResponseEntity<Object> findCourseById(@PathVariable(value = "courseId") UUID courseId) {
 
+        log.debug("GET findCourseById courseId received {}", courseId);
         if (!this.courseService.existsById(courseId)) {
+            log.warn("GET findCourseById courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
+        log.debug("GET findCourseById courseId {}", courseId);
+        log.info("Course userId {} found!", courseId);
         return ResponseEntity.status(HttpStatus.OK).body(this.courseService.findCourseById(courseId));
     }
 }

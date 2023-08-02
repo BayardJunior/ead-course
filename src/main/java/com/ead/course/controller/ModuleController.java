@@ -6,6 +6,7 @@ import com.ead.course.models.ModuleModel;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import com.ead.course.specifications.SpecificationTemplate;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,6 +24,7 @@ import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
+@Log4j2
 @RestController
 @RequestMapping("/courses/{courseId}/modules")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -38,7 +40,9 @@ public class ModuleController {
     public ResponseEntity<Object> saveModule(@PathVariable(value = "courseId") UUID courseId,
                                              @RequestBody @Validated ModuleDto moduleDto) {
 
+        log.debug("Post saveModule moduleDto received {}", moduleDto.toString());
         if (!this.courseService.existsById(courseId)) {
+            log.warn("POST saveModule courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
 
@@ -49,19 +53,25 @@ public class ModuleController {
         moduleModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
         moduleModel.setCourse(course);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.moduleService.save(moduleModel));
+        this.moduleService.save(moduleModel);
+        log.debug("POST saveModule moduleModel {}", moduleModel.toString());
+        log.info("Module modlueId {} saved successfully!", moduleModel.getModuleId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(moduleModel);
     }
 
     @DeleteMapping("/{moduleId}")
     public ResponseEntity<Object> deleteModuleById(@PathVariable(value = "courseId") UUID courseId,
                                                    @PathVariable(value = "moduleId") UUID moduleId) {
 
+        log.debug("DELETE deleteModuleById courseId {} moduleId {} received", courseId, moduleId);
         Optional<ModuleModel> module = this.moduleService.findModuleIntoCourse(courseId, moduleId);
         if (!module.isPresent()) {
+            log.warn("DELETE deleteModuleById Module {} Not Found For This Course {}!", moduleId, courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module Not Found For This Course!");
         }
         this.moduleService.cascadeDeleteSafety(module.get());
-
+        log.debug("DELETE deleteModuleById moduleId deleted {}", moduleId);
+        log.info("Module moduleId {} deleted!", moduleId);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module deleted sucessfully");
     }
 
@@ -69,13 +79,17 @@ public class ModuleController {
     public ResponseEntity<Object> updateModule(@PathVariable(value = "courseId") UUID courseId,
                                                @PathVariable(value = "moduleId") UUID moduleId,
                                                @RequestBody @Validated ModuleDto moduleDto) {
+
+        log.debug("PUT updateModule courseId {} moduleId {} received", courseId, moduleId);
         Optional<ModuleModel> module = this.moduleService.findModuleIntoCourse(courseId, moduleId);
         if (!module.isPresent()) {
+            log.warn("PUT updateModule Module {} Not Found For This Course {}!", moduleId, courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module Not Found For This Course!");
         }
 
         BeanUtils.copyProperties(moduleDto, module.get());
-
+        log.debug("PUT updateModule moduleId updated {}", moduleId);
+        log.info("Module moduleId {} updated!", moduleId);
         return ResponseEntity.status(HttpStatus.OK).body(this.moduleService.save(module.get()));
     }
 
@@ -93,10 +107,14 @@ public class ModuleController {
     public ResponseEntity<Object> findModuleById(@PathVariable(value = "courseId") UUID courseId,
                                                  @PathVariable(value = "moduleId") UUID moduleId) {
 
+        log.debug("GET findModuleById courseId {} moduleId {} received", courseId, moduleId);
         Optional<ModuleModel> module = this.moduleService.findModuleIntoCourse(courseId, moduleId);
         if (!module.isPresent()) {
+            log.warn("GET findModuleById Module {} Not Found For This Course {}!", moduleId, courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Module Not Found For This Course!");
         }
+        log.debug("GET findModuleById moduleId {}", moduleId);
+        log.info("Lesson moduleId {} found!", moduleId);
         return ResponseEntity.status(HttpStatus.OK).body(module.get());
     }
 }
