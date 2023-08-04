@@ -3,6 +3,7 @@ package com.ead.course.controller;
 import com.ead.course.dtos.CourseDto;
 import com.ead.course.models.CourseModel;
 import com.ead.course.services.CourseService;
+import com.ead.course.specifications.SpecificationTemplate;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,9 +80,17 @@ public class CourseController {
     @GetMapping
     public ResponseEntity<Page<CourseModel>> findAllCourses(Specification<CourseModel> courseSpec,
                                                             @PageableDefault(page = 0, size = 10, sort = "courseId",
-                                                                    direction = Sort.Direction.ASC) Pageable pageable) {
+                                                                    direction = Sort.Direction.ASC) Pageable pageable,
+                                                            @RequestParam(required = false) UUID userId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(this.courseService.findAllCourses(courseSpec, pageable));
+        Page<CourseModel> page;
+        if (userId != null) {
+            page = this.courseService.findAllCourses(SpecificationTemplate.courseUserIdSpec(userId).and(courseSpec), pageable);
+        } else {
+            page = this.courseService.findAllCourses(courseSpec, pageable);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(page);
     }
 
     @GetMapping("/{courseId}")
