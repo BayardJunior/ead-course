@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity()
+@Entity
 @Table(name = "TB_LESSONS")
 public class LessonModel implements Serializable {
 

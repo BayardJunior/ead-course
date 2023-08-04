@@ -17,9 +17,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@EqualsAndHashCode(exclude = "modules")
+@EqualsAndHashCode(exclude = {"modules", "coursesUsers"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity()
+@Entity
 @Table(name = "TB_COURSES")
 public class CourseModel implements Serializable {
 
@@ -67,4 +67,9 @@ public class CourseModel implements Serializable {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     private Set<ModuleModel> modules;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<CourseUserModel> coursesUsers;
 }

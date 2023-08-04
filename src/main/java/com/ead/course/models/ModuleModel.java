@@ -17,7 +17,7 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(exclude = "lessons")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Entity()
+@Entity
 @Table(name = "TB_MODULES")
 public class ModuleModel implements Serializable {
 
