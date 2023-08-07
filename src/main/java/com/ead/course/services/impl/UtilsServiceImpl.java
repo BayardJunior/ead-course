@@ -8,14 +8,12 @@ import java.util.UUID;
 
 @Service
 public class UtilsServiceImpl implements UtilsService {
-    private final String DEFAULT_URI_AUTH_USER_SERVICES = "http://localhost:8087/";
 
     public String getUrlToAllUsersByCourseId(UUID courseId, Pageable pageable) {
-        return DEFAULT_URI_AUTH_USER_SERVICES
-                .concat("/users?courseId="
-                        .concat(courseId.toString())
-                        .concat("&page=".concat(String.valueOf(pageable.getPageNumber())))
-                        .concat("&size=".concat(String.valueOf(pageable.getPageSize())))
-                        .concat("&sort=").concat(pageable.getSort().toString().replaceAll(": ", ",")));
+        return "/users?courseId="
+                .concat(courseId.toString())
+                .concat("&page=".concat(String.valueOf(pageable.getPageNumber())))
+                .concat("&size=".concat(String.valueOf(pageable.getPageSize())))
+                .concat("&sort=").concat(pageable.getSort().toString().replaceAll(": ", ","));
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = "com.ead.authuser.infrastructure")
+@ComponentScan(basePackages = "com.ead.course.infrastructure")
 public class RestConfig implements WebMvcConfigurer {
     public RestConfig() {
         super();

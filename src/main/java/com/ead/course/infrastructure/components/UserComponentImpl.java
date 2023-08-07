@@ -5,6 +5,7 @@ import com.ead.course.dtos.UserDto;
 import com.ead.course.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,12 +27,13 @@ public class UserComponentImpl {
     @Autowired
     UtilsService utilsService;
 
-    private final String DEFAULT_URI_COURSE_SERVICES = "http://localhost:8082/";
+    @Value("${ead.api.url.auth-user}")
+    private String DEFAULT_URI_AUTH_USER_SERVICES;
 
     public Page<UserDto> findAllUsersByCourse(UUID courseId, Pageable pageable) {
 
         ResponseEntity<ResponsePageDto<UserDto>> result = null;
-        String url = this.utilsService.getUrlToAllUsersByCourseId(courseId, pageable);
+        String url = DEFAULT_URI_AUTH_USER_SERVICES.concat(this.utilsService.getUrlToAllUsersByCourseId(courseId, pageable));
 
         log.debug("Request Url: {}", url);
         log.info("Request Url: {}", url);
