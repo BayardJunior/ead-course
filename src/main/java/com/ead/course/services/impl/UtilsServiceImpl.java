@@ -16,4 +16,9 @@ public class UtilsServiceImpl implements UtilsService {
                 .concat("&size=".concat(String.valueOf(pageable.getPageSize())))
                 .concat("&sort=").concat(pageable.getSort().toString().replaceAll(": ", ","));
     }
+
+    @Override
+    public String getUrlToFindUserById(UUID userId) {
+        return "/users/userId";
+    }
 }

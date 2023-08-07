@@ -50,4 +50,15 @@ public class UserComponentImpl {
 
         return result.getBody();
     }
+
+    public ResponseEntity<UserDto> findUsersById(UUID userId) {
+
+        ResponseEntity<UserDto> result = null;
+        String url = DEFAULT_URI_AUTH_USER_SERVICES.concat(this.utilsService.getUrlToFindUserById(userId));
+
+        log.debug("Request Url: {}", url);
+        log.info("Request Url: {}", url);
+
+        return restTemplate.exchange(url, HttpMethod.GET, null, UserDto.class);
+    }
 }

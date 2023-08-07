@@ -2,6 +2,7 @@ package com.ead.course.controller;
 
 import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.dtos.UserDto;
+import com.ead.course.enums.UserStatus;
 import com.ead.course.infrastructure.components.UserComponentImpl;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.CourseUserModel;
@@ -16,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import javax.validation.Valid;
 import java.util.UUID;
@@ -46,6 +48,7 @@ public class CourseUserController {
     @PostMapping("/subscription")
     public ResponseEntity<Object> saveSubscrptionUserInCourse(@PathVariable(value = "courseId") UUID courseId,
                                                               @RequestBody @Valid SubscriptionDto subscriptionDto) {
+        ResponseEntity<UserDto> user = null;
         log.debug("POST saveSubscrptionUserInCourse courseId received {}", courseId);
         if (!this.courseService.existsById(courseId)) {
             log.warn("POST saveSubscrptionUserInCourse courseId {} not found", courseId);
@@ -60,10 +63,20 @@ public class CourseUserController {
         }
 
         // TODO: 07/08/2023 Validação de user ativo
+        try {
+            user = userComponent.findUsersById(subscriptionDto.getUserId());
+            if (user.getBody().getUserStatus().equals(UserStatus.BLOCKED)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User Is Blocked!");
+            }
+        } catch (HttpStatusCodeException e) {
+            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found!");
+            }
+        }
 
         CourseUserModel courseUserModel = this.service.save(course.convertToCourseUserModel(subscriptionDto.getUserId()));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Subscription created successfully!");
+        return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel);
     }
 
 }
