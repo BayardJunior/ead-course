@@ -62,7 +62,6 @@ public class CourseUserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: subscription already exists!");
         }
 
-        // TODO: 07/08/2023 Validação de user ativo
         try {
             user = userComponent.findUsersById(subscriptionDto.getUserId());
             if (user.getBody().getUserStatus().equals(UserStatus.BLOCKED)) {
