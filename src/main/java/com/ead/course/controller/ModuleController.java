@@ -54,7 +54,7 @@ public class ModuleController {
         moduleModel.setCourse(course);
 
         this.moduleService.save(moduleModel);
-        log.debug("POST saveModule moduleModel {}", moduleModel.toString());
+        log.debug("POST saveModule getModuleId {}", moduleModel.getModuleId());
         log.info("Module modlueId {} saved successfully!", moduleModel.getModuleId());
         return ResponseEntity.status(HttpStatus.CREATED).body(moduleModel);
     }
@@ -95,7 +95,7 @@ public class ModuleController {
 
     @GetMapping
     public ResponseEntity<Page<ModuleModel>> findAllModules(@PathVariable(value = "courseId") UUID courseId,
-                                                            Specification<ModuleModel> spec,
+                                                            SpecificationTemplate.ModuleSpec spec,
                                                             @PageableDefault(page = 0, size = 10, sort = "moduleId",
                                                                     direction = Sort.Direction.ASC) Pageable pageable) {
 

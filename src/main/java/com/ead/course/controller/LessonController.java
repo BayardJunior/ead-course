@@ -54,7 +54,7 @@ public class LessonController {
         lessonModel.setModule(moduleModel);
 
         this.lessonService.save(lessonModel);
-        log.debug("POST saveLesson lessonDto {}", lessonModel.toString());
+        log.debug("POST saveLesson getLessonId {}", lessonModel.getLessonId());
         log.info("Lesson lessonId {} saved successfully!", lessonModel.getLessonId());
         return ResponseEntity.status(HttpStatus.CREATED).body(lessonModel);
     }
@@ -75,7 +75,7 @@ public class LessonController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson Not Found For This Module!");
         }
         this.lessonService.deleteLesson(lesson.get());
-        log.debug("DELETE deleteModuleById lessonId deleted {}", lessonId);
+        log.debug("DELETE deleteModuleById lessonId {} deleted", lessonId);
         log.info("Lesson lessonId {} deleted!", lessonId);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson deleted sucessfully");
     }
@@ -104,7 +104,7 @@ public class LessonController {
 
     @GetMapping
     public ResponseEntity<Page<LessonModel>> findAllLessons(@PathVariable(value = "moduleId") UUID modulesId,
-                                                            Specification<LessonModel> spec,
+                                                            SpecificationTemplate.LessonSpec spec,
                                                             @PageableDefault(page = 0, size = 10, sort = "moduleId",
                                                                     direction = Sort.Direction.ASC) Pageable pageable) {
 
@@ -119,7 +119,7 @@ public class LessonController {
         log.debug("GET findLessonById ModuleId {} lessonId {} received", modulesId, lessonId);
         Optional<LessonModel> lesson = this.lessonService.findLessonIntoModule(modulesId, lessonId);
         if (!lesson.isPresent()) {
-            log.warn("GET findLessonById Lesson {} Not Found For This Module {}!", lessonId ,modulesId);
+            log.warn("GET findLessonById Lesson {} Not Found For This Module {}!", lessonId, modulesId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lesson Not Found For This Module!");
         }
         log.debug("GET findLessonById lessonId {}", lessonId);

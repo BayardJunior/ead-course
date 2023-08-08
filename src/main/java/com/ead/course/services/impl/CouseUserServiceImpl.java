@@ -1,5 +1,6 @@
 package com.ead.course.services.impl;
 
+import com.ead.course.infrastructure.components.UserComponentImpl;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.CourseUserModel;
 import com.ead.course.repositories.CourseUserRepository;
@@ -7,6 +8,7 @@ import com.ead.course.services.CourseUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 @Service
@@ -14,6 +16,9 @@ public class CouseUserServiceImpl implements CourseUserService {
 
     @Autowired
     CourseUserRepository repository;
+
+    @Autowired
+    UserComponentImpl userComponent;
 
     @Override
     public boolean existsUserIdInCourse(CourseModel course, UUID userId) {
@@ -24,5 +29,15 @@ public class CouseUserServiceImpl implements CourseUserService {
     @Override
     public CourseUserModel save(CourseUserModel courseUserModel) {
         return this.repository.save(courseUserModel);
+    }
+
+    @Transactional
+    @Override
+    public CourseUserModel saveAndSubscriptionUserInCourse(CourseUserModel courseUserModel) {
+        CourseUserModel saved = this.repository.save(courseUserModel);
+
+        userComponent.sendSubscpritionToAuthUser(courseUserModel.getCourse().getCourseId(), courseUserModel.getUserId());
+
+        return saved;
     }
 }

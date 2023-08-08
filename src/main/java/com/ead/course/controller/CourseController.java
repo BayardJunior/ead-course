@@ -39,7 +39,7 @@ public class CourseController {
         courseModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
 
         this.courseService.save(courseModel);
-        log.debug("Post saveCourse courseModel saved {}", courseModel.toString());
+        log.debug("Post saveCourse courseId saved {}", courseModel.getCourseId());
         log.info("Course saved successfully courseId {}", courseModel.getCourseId());
         return ResponseEntity.status(HttpStatus.CREATED).body(courseModel);
     }

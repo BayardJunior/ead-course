@@ -2,6 +2,7 @@ package com.ead.course.infrastructure.components;
 
 import com.ead.course.dtos.ResponsePageDto;
 import com.ead.course.dtos.UserDto;
+import com.ead.course.infrastructure.dto.SubscriptionUserInCourseDto;
 import com.ead.course.services.UtilsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,22 @@ public class UserComponentImpl {
 
     public ResponseEntity<UserDto> findUsersById(UUID userId) {
 
-        ResponseEntity<UserDto> result = null;
         String url = DEFAULT_URI_AUTH_USER_SERVICES.concat(this.utilsService.getUrlToFindUserById(userId));
 
         log.debug("Request Url: {}", url);
         log.info("Request Url: {}", url);
 
         return restTemplate.exchange(url, HttpMethod.GET, null, UserDto.class);
+    }
+
+    public void sendSubscpritionToAuthUser(UUID courseId, UUID userId) {
+
+        String url = DEFAULT_URI_AUTH_USER_SERVICES.concat(this.utilsService.getUrlToSaveSubscriptionIntoCourse(userId));
+        SubscriptionUserInCourseDto dto = new SubscriptionUserInCourseDto();
+        dto.setUserId(userId);
+        dto.setCourseId(courseId);
+
+        restTemplate.postForObject(url, dto, String.class);
+
     }
 }

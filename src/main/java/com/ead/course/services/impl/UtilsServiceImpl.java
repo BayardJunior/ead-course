@@ -21,4 +21,14 @@ public class UtilsServiceImpl implements UtilsService {
     public String getUrlToFindUserById(UUID userId) {
         return "/users/userId";
     }
+
+    @Override
+    public String getUrlToSaveSubscriptionIntoCourse(UUID userId) {
+
+        return "/users"
+                .concat("/")
+                .concat(userId.toString())
+                .concat("/courses")
+                .concat("/subscription");
+    }
 }
