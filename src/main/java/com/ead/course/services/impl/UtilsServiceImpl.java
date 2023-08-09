@@ -19,7 +19,7 @@ public class UtilsServiceImpl implements UtilsService {
 
     @Override
     public String getUrlToFindUserById(UUID userId) {
-        return "/users/userId";
+        return "/users/".concat(userId.toString());
     }
 
     @Override

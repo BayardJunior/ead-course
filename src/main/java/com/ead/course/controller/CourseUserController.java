@@ -3,7 +3,7 @@ package com.ead.course.controller;
 import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.dtos.UserDto;
 import com.ead.course.enums.UserStatus;
-import com.ead.course.infrastructure.components.UserComponentImpl;
+import com.ead.course.infrastructure.components.AuthUserComponentImpl;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.CourseUserModel;
 import com.ead.course.services.CourseService;
@@ -30,7 +30,7 @@ public class CourseUserController {
 
 
     @Autowired
-    UserComponentImpl userComponent;
+    AuthUserComponentImpl userComponent;
 
     @Autowired
     CourseService courseService;

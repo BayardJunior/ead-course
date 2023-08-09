@@ -20,7 +20,7 @@ import java.util.UUID;
 
 @Log4j2
 @Component
-public class UserComponentImpl {
+public class AuthUserComponentImpl {
 
     @Autowired
     RestTemplate restTemplate;

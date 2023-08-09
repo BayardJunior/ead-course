@@ -1,6 +1,6 @@
 package com.ead.course.services.impl;
 
-import com.ead.course.infrastructure.components.UserComponentImpl;
+import com.ead.course.infrastructure.components.AuthUserComponentImpl;
 import com.ead.course.models.CourseModel;
 import com.ead.course.models.CourseUserModel;
 import com.ead.course.repositories.CourseUserRepository;
@@ -18,7 +18,7 @@ public class CouseUserServiceImpl implements CourseUserService {
     CourseUserRepository repository;
 
     @Autowired
-    UserComponentImpl userComponent;
+    AuthUserComponentImpl userComponent;
 
     @Override
     public boolean existsUserIdInCourse(CourseModel course, UUID userId) {
