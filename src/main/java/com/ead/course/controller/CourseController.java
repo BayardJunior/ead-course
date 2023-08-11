@@ -65,7 +65,7 @@ public class CourseController {
         this.courseService.cascadeDeleteSafety(courseModel);
         log.debug("DELETE deleteCourseById courseId deleted {}", courseId);
         log.info("Course courseId {} deleted!", courseId);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course deleted successfully");
+        return ResponseEntity.status(HttpStatus.OK).body("Course deleted successfully");
     }
 
     @PutMapping("{courseId}")

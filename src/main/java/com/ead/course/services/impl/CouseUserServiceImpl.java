@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,8 +37,15 @@ public class CouseUserServiceImpl implements CourseUserService {
     public CourseUserModel saveAndSubscriptionUserInCourse(CourseUserModel courseUserModel) {
         CourseUserModel saved = this.repository.save(courseUserModel);
 
-        userComponent.sendSubscpritionToAuthUser(courseUserModel.getCourse().getCourseId(), courseUserModel.getUserId());
+        this.userComponent.sendSubscpritionToAuthUser(courseUserModel.getCourse().getCourseId(), courseUserModel.getUserId());
 
         return saved;
+    }
+
+    @Override
+    public void deleteAllCourseUsersByCourse(CourseModel courseModel) {
+        List<CourseUserModel> coursesUsersIntoCourse = this.repository.findAllCourseUserModelIntoCourse(courseModel.getCourseId());
+        this.repository.deleteAll(coursesUsersIntoCourse);
+
     }
 }

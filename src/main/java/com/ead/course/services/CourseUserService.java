@@ -12,4 +12,6 @@ public interface CourseUserService {
     CourseUserModel save(CourseUserModel courseUserModel);
 
     CourseUserModel saveAndSubscriptionUserInCourse(CourseUserModel courseUserModel);
+
+    void deleteAllCourseUsersByCourse(CourseModel courseModel);
 }

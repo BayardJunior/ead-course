@@ -1,5 +1,6 @@
 package com.ead.course.services.impl;
 
+import com.ead.course.models.CourseModel;
 import com.ead.course.models.ModuleModel;
 import com.ead.course.repositories.ModuleRepository;
 import com.ead.course.services.LessonService;
@@ -70,5 +71,13 @@ public class ModuleServiceImpl implements ModuleService {
     @Override
     public Page<ModuleModel> findAllModulesIntoCourse(Specification<ModuleModel> spec, Pageable pageable) {
         return this.moduleRepository.findAll(spec, pageable);
+    }
+
+    @Override
+    public void deleteAllModulesByCourse(CourseModel courseModel) {
+        List<ModuleModel> allModulesIntoCourse = this.findAllModulesIntoCourse(courseModel.getCourseId());
+        if (!allModulesIntoCourse.isEmpty()) {
+            this.cascadeDeleteSafety(allModulesIntoCourse);
+        }
     }
 }
