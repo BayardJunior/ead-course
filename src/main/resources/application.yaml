@@ -1,13 +1,15 @@
 server:
   port: 8082
+  servlet:
+    context-path: '/ead-course/'
 
 spring:
   application:
     name: ead-course-service
   datasource:
     url: jdbc:postgresql://localhost:5432/ead-course
-    username: postgres
-    password: admin
+    username: bayardjunior
+    password:
   jpa:
     hibernate:
       ddl-auto: update
@@ -31,7 +33,7 @@ logging:
 ead:
   api:
     url:
-      auth-user: 'http://ead-authuser-service'
+      auth-user: 'http://ead-authuser-service/ead-authuser'
 
 eureka:
   client:
