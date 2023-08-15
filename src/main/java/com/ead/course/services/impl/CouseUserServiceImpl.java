@@ -50,4 +50,15 @@ public class CouseUserServiceImpl implements CourseUserService {
             this.userComponent.deleteCourseInAuthUser(courseModel.getCourseId());
         }
     }
+
+    @Override
+    public boolean existsByUserId(UUID userId) {
+        return this.repository.existsByUserId(userId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteCourseByUser(UUID userId) {
+        this.repository.deleteAllByUserId(userId);
+    }
 }

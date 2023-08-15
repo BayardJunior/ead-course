@@ -10,7 +10,6 @@ import com.ead.course.services.CourseService;
 import com.ead.course.services.CourseUserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -25,7 +24,7 @@ import java.util.UUID;
 @Log4j2
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/courses/{courseId}/users")
+@RequestMapping()
 public class CourseUserController {
 
 
@@ -38,9 +37,9 @@ public class CourseUserController {
     @Autowired
     CourseUserService service;
 
-    @GetMapping
+    @GetMapping("/courses/{courseId}/users")
     public ResponseEntity<Object> findAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
-                                                              @PathVariable(value = "courseId") UUID courseId) {
+                                                       @PathVariable(value = "courseId") UUID courseId) {
         if (!this.courseService.existsById(courseId)) {
             log.warn("GET findAllUsersByCourse courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
@@ -82,4 +81,12 @@ public class CourseUserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseUserModel);
     }
 
+    @DeleteMapping("courses/users/{userId}")
+    public ResponseEntity<Object> deleteCourseUserByUser(@PathVariable(value = "userId") UUID userId) {
+        if (!this.service.existsByUserId(userId)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("CourseUser Not Found!");
+        }
+        this.service.deleteCourseByUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body("CourseUser deleted successfuly!");
+    }
 }
