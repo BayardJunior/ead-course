@@ -72,4 +72,14 @@ public class AuthUserComponentImpl {
         restTemplate.postForObject(url, dto, String.class);
 
     }
+
+    public void deleteCourseInAuthUser(UUID courseId) {
+
+        String url = DEFAULT_URI_AUTH_USER_SERVICES.concat(this.utilsService.deleteUrlUserCourseByCourse(courseId));
+
+        log.debug("Request Url: {}", url);
+        log.info("Request Url: {}", url);
+
+        restTemplate.exchange(url, HttpMethod.DELETE, null, String.class);
+    }
 }

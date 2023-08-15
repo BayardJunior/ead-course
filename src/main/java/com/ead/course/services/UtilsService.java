@@ -12,4 +12,5 @@ public interface UtilsService {
 
     String getUrlToSaveSubscriptionIntoCourse(UUID userId);
 
+    String deleteUrlUserCourseByCourse(UUID courseId);
 }

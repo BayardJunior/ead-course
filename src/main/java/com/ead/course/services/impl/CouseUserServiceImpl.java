@@ -45,7 +45,9 @@ public class CouseUserServiceImpl implements CourseUserService {
     @Override
     public void deleteAllCourseUsersByCourse(CourseModel courseModel) {
         List<CourseUserModel> coursesUsersIntoCourse = this.repository.findAllCourseUserModelIntoCourse(courseModel.getCourseId());
-        this.repository.deleteAll(coursesUsersIntoCourse);
-
+        if (!coursesUsersIntoCourse.isEmpty()) {
+            this.repository.deleteAll(coursesUsersIntoCourse);
+            this.userComponent.deleteCourseInAuthUser(courseModel.getCourseId());
+        }
     }
 }

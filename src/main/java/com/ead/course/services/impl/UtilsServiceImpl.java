@@ -31,4 +31,10 @@ public class UtilsServiceImpl implements UtilsService {
                 .concat("/courses")
                 .concat("/subscription");
     }
+
+    @Override
+    public String deleteUrlUserCourseByCourse(UUID courseId) {
+
+        return "/users/course/".concat(courseId.toString());
+    }
 }
