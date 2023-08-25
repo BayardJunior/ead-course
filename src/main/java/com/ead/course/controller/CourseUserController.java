@@ -3,6 +3,7 @@ package com.ead.course.controller;
 import com.ead.course.dtos.SubscriptionDto;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
+import com.ead.course.specifications.SpecificationTemplate;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -28,13 +29,14 @@ public class CourseUserController {
     UserService service;
 
     @GetMapping
-    public ResponseEntity<Object> findAllUsersByCourse(@PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<Object> findAllUsersByCourse(SpecificationTemplate.UserSpec userSpec,
+                                                       @PageableDefault(page = 0, size = 10, sort = "userId", direction = Sort.Direction.ASC) Pageable pageable,
                                                        @PathVariable(value = "courseId") UUID courseId) {
         if (!this.courseService.existsById(courseId)) {
             log.warn("POST saveSubscrptionUserInCourse courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("T");
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(SpecificationTemplate.userCourseIdSpec(courseId).and(userSpec), pageable));
     }
 
     @PostMapping("/subscription")
