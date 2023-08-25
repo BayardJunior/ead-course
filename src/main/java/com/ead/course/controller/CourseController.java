@@ -91,14 +91,7 @@ public class CourseController {
                                                                     direction = Sort.Direction.ASC) Pageable pageable,
                                                             @RequestParam(required = false) UUID userId) {
 
-        Page<CourseModel> page;
-        if (userId != null) {
-            page = this.courseService.findAllCourses(SpecificationTemplate.courseUserIdSpec(userId).and(courseSpec), pageable);
-        } else {
-            page = this.courseService.findAllCourses(courseSpec, pageable);
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(page);
+        return ResponseEntity.status(HttpStatus.OK).body(this.courseService.findAllCourses(courseSpec, pageable));
     }
 
     @GetMapping("/{courseId}")

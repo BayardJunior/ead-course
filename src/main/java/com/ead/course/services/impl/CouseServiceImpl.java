@@ -3,8 +3,8 @@ package com.ead.course.services.impl;
 import com.ead.course.models.CourseModel;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
-import com.ead.course.services.CourseUserService;
 import com.ead.course.services.ModuleService;
+import com.ead.course.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +24,12 @@ public class CouseServiceImpl implements CourseService {
     ModuleService moduleService;
 
     @Autowired
-    CourseUserService courseUserService;
+    UserService userService;
 
     @Transactional
     @Override
     public void cascadeDeleteSafety(CourseModel courseModel) {
         moduleService.deleteAllModulesByCourse(courseModel);
-        courseUserService.deleteAllCourseUsersByCourse(courseModel);
         courseRepository.delete(courseModel);
     }
 
