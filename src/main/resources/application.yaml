@@ -1,5 +1,7 @@
 server:
   port: 8082
+  servlet:
+    context-path: /ead-course
 
 spring:
   application:
@@ -34,7 +36,12 @@ ead:
   api:
     url:
       auth-user: 'http://ead-authuser-service'
-
+  broker:
+    exchange:
+      userEventExchange: ead.user-event
+    queue:
+      userEventQueue:
+        name: ead.user-event.ms.course
 eureka:
   client:
     service-url:
