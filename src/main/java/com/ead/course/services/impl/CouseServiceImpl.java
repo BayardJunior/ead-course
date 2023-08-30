@@ -30,6 +30,7 @@ public class CouseServiceImpl implements CourseService {
     @Override
     public void cascadeDeleteSafety(CourseModel courseModel) {
         moduleService.deleteAllModulesByCourse(courseModel);
+        this.deleteCourseUserByCourseId(courseModel.getCourseId());
         courseRepository.delete(courseModel);
     }
 
@@ -53,4 +54,24 @@ public class CouseServiceImpl implements CourseService {
         return courseRepository.findAll(courseSpec, pageable);
     }
 
+    @Override
+    public boolean existsByCourseAndUser(UUID courseId, UUID userId) {
+
+        return this.courseRepository.existsByCourseAndUser(courseId, userId);
+    }
+
+    @Transactional
+    @Override
+    public void saveSubscriptionUserinCourse(UUID courseId, UUID userId) {
+        this.courseRepository.saveSubscriptionUserinCourse(courseId, userId);
+    }
+
+    @Override
+    public void deleteCourseUserByUserId(UUID userId) {
+        this.courseRepository.deleteCourseUserByUserId(userId);
+    }
+
+    private void deleteCourseUserByCourseId(UUID courseId) {
+        this.courseRepository.deleteCourseUserByCourseId(courseId);
+    }
 }

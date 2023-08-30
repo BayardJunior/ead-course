@@ -18,4 +18,10 @@ public interface CourseService {
     CourseModel findCourseById(UUID courseId);
 
     Page<CourseModel> findAllCourses(Specification<CourseModel> courseSpec, Pageable pageable);
+
+    boolean existsByCourseAndUser(UUID courseId, UUID userId);
+
+    void saveSubscriptionUserinCourse(UUID courseId, UUID userId);
+
+    void deleteCourseUserByUserId(UUID userId);
 }

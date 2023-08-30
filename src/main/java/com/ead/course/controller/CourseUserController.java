@@ -1,6 +1,9 @@
 package com.ead.course.controller;
 
 import com.ead.course.dtos.SubscriptionDto;
+import com.ead.course.enums.UserStatus;
+import com.ead.course.models.CourseModel;
+import com.ead.course.models.UserModel;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.UserService;
 import com.ead.course.specifications.SpecificationTemplate;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.UUID;
 
 @Log4j2
@@ -26,7 +30,7 @@ public class CourseUserController {
     CourseService courseService;
 
     @Autowired
-    UserService service;
+    UserService userService;
 
     @GetMapping
     public ResponseEntity<Object> findAllUsersByCourse(SpecificationTemplate.UserSpec userSpec,
@@ -36,7 +40,7 @@ public class CourseUserController {
             log.warn("POST saveSubscrptionUserInCourse courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(SpecificationTemplate.userCourseIdSpec(courseId).and(userSpec), pageable));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll(SpecificationTemplate.userCourseIdSpec(courseId).and(userSpec), pageable));
     }
 
     @PostMapping("/subscription")
@@ -47,8 +51,24 @@ public class CourseUserController {
             log.warn("POST saveSubscrptionUserInCourse courseId {} not found", courseId);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Course Not Found!");
         }
-        // TODO: 25/08/2023 validaçoes de state transfer
-        return ResponseEntity.status(HttpStatus.CREATED).body("T");
+
+        Optional<UserModel> userModel = this.userService.findById(subscriptionDto.getUserId());
+        if (!userModel.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Found!");
+        }
+
+        if (userModel.get().getUserStatus().equals(UserStatus.BLOCKED)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Is Blocked!");
+        }
+
+        if (this.courseService.existsByCourseAndUser(courseId, subscriptionDto.getUserId())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("ERROR: Subscription already exists!");
+        }
+
+        CourseModel courseById = this.courseService.findCourseById(courseId);
+        courseService.saveSubscriptionUserinCourse(courseById.getCourseId(), userModel.get().getUserId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Subscription Created Successfully!");
     }
 
 }

@@ -1,12 +1,16 @@
 package com.ead.course.validator;
 
 import com.ead.course.dtos.CourseDto;
+import com.ead.course.enums.UserType;
+import com.ead.course.models.UserModel;
+import com.ead.course.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -15,6 +19,9 @@ public class CourseValidator implements Validator {
     @Qualifier("defaultValidator")
     @Autowired
     Validator validator;
+
+    @Autowired
+    UserService userService;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -31,17 +38,13 @@ public class CourseValidator implements Validator {
     }
 
     private void validateUserInstructor(UUID userInstructor, Errors errors) {
-//        ResponseEntity<UserDto> user;
-//
-//        try {
-//            user = authUserComponent.findUsersById(userInstructor);
-//            if (user.getBody().getUserType().equals(UserType.STUDENT)) {
-//                errors.rejectValue("userInstructor", "UserInstructorError", "User Must Be a Instructor or Admin");
-//            }
-//        } catch (HttpStatusCodeException e) {
-//            if (e.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-//                errors.rejectValue("userInstructor", "UserInstructorError", "Instructor ".concat(userInstructor.toString()).concat(" Not Found!"));
-//            }
-//        }
+        Optional<UserModel> userModel = userService.findById(userInstructor);
+
+        if (!userModel.isPresent()) {
+            errors.rejectValue("userInstructor", "UserInstructorError", "Instructor ".concat(userInstructor.toString()).concat(" Not Found!"));
+        }
+        if (userModel.get().getUserType().equals(UserType.STUDENT)) {
+            errors.rejectValue("userInstructor", "UserInstructorError", "User Must Be a Instructor or Admin");
+        }
     }
 }
