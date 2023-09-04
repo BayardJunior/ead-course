@@ -66,7 +66,8 @@ public class CourseUserController {
         }
 
         CourseModel courseById = this.courseService.findCourseById(courseId);
-        courseService.saveSubscriptionUserinCourse(courseById.getCourseId(), userModel.get().getUserId());
+//        courseService.saveSubscriptionUserinCourse(courseById.getCourseId(), userModel.get().getUserId());
+        courseService.saveSubscriptionUserinCourseAndSendNotification(courseById, userModel.get());
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Subscription Created Successfully!");
     }

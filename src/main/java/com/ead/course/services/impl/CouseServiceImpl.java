@@ -1,10 +1,14 @@
 package com.ead.course.services.impl;
 
+import com.ead.course.infrastructure.event.dtos.NotificationCommandDto;
+import com.ead.course.infrastructure.event.publishers.NotificationCommandPublisher;
 import com.ead.course.models.CourseModel;
+import com.ead.course.models.UserModel;
 import com.ead.course.repositories.CourseRepository;
 import com.ead.course.services.CourseService;
 import com.ead.course.services.ModuleService;
 import com.ead.course.services.UserService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
+@Log4j2
 @Service
 public class CouseServiceImpl implements CourseService {
 
@@ -25,6 +30,9 @@ public class CouseServiceImpl implements CourseService {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    NotificationCommandPublisher notificationCommandPublisher;
 
     @Transactional
     @Override
@@ -65,6 +73,22 @@ public class CouseServiceImpl implements CourseService {
     public void saveSubscriptionUserinCourse(UUID courseId, UUID userId) {
         this.courseRepository.saveSubscriptionUserinCourse(courseId, userId);
     }
+
+    @Transactional
+    @Override
+    public void saveSubscriptionUserinCourseAndSendNotification(CourseModel courseModel, UserModel userModel) {
+        this.saveSubscriptionUserinCourse(courseModel.getCourseId(), userModel.getUserId());
+        try {
+            NotificationCommandDto notificationCommandDto = new NotificationCommandDto();
+            notificationCommandDto.setTitle("Seja bem vindo(a) ao curso: ".concat(courseModel.getName()));
+            notificationCommandDto.setMessage(userModel.getFullName().concat("a sua matricula foi realizada com sucesso!"));
+            notificationCommandDto.setUserId(userModel.getUserId());
+            notificationCommandPublisher.publichNotificationCommand(notificationCommandDto);
+        } catch (Exception e) {
+            log.warn("Error sending notification!");
+        }
+    }
+
 
     @Override
     public void deleteCourseUserByUserId(UUID userId) {
